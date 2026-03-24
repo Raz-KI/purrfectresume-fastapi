@@ -11,7 +11,8 @@ function App() {
   const [file, setFile] = useState<File | null>(null);
   const [jobDesc, setJobDesc] = useState("");
   const [result, setResult] = useState<any>(null);
-  let t = "hi"
+  // const [files, setFiles] = useState({ pdf: null, docx: null });
+  // let t = "hi"
 
   const handleSubmit = async () => {
     if (!file) return;
@@ -28,7 +29,37 @@ function App() {
     );
 
     setResult(res.data);
+    // setFiles({ pdf: res.data.pdf, docx: res.data.docx });
+
+    
+
   };
+  
+const downloadFile = async (type: "pdf" | "docx") => {
+  const response = await fetch(`http://localhost:8000/download-${type}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      content: result.content, 
+    }),
+  });
+
+  const blob = await response.blob();
+
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `resume.${type}`;
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  window.URL.revokeObjectURL(url); 
+};
 
   return (
     <div style={{ padding: "20px" }}>
@@ -36,13 +67,13 @@ function App() {
 
       <input type="file" onChange={(e) =>{ setFile(e.target.files?.[0] || null)
         console.log(e)
-        
-        t = JSON.stringify(e)
+
+        // t = JSON.stringify(e)
       }} />
       {/* e means event we can use anything instead of "e". It storese the changes 
       happening. .target is the property of e. e.target means where the change is happening
       here it is in the input. */}
-      <h1>{t}</h1>
+      {/* <h1>{t}</h1> */}
 
       <textarea
         placeholder="Paste Job Description"
@@ -54,12 +85,18 @@ function App() {
 
       {result && (
         <div>
-          <a href={result.pdf}>Download PDF</a>
-          <a href={result.docx}>Download DOCX</a>
-        </div>
+          <button onClick={() => downloadFile("pdf")}>
+            Download PDF
+          </button>
+
+          <button onClick={() => downloadFile("docx")}>
+            Download DOCX
+          </button>
+      </div>
       )}
     </div>
   );
+  
 }
 
 export default App;

@@ -1,5 +1,13 @@
-# import openai
+from dotenv import load_dotenv
 import os
+from google import genai
+
+load_dotenv()
+
+
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+
 
 # openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -20,11 +28,12 @@ def generate_resume(resume_text, job_description):
     - Use bullet points
     """
 
-    # response = openai.ChatCompletion.create(
-    #     model="gpt-4o-mini",
-    #     messages=[{"role": "user", "content": prompt}]
-    # )
-    response = "You are selected"
+    response = client.models.generate_content(
+    model="gemini-3-flash-preview",
+    contents=prompt)
+
+    return response.text
+
 
     # return response['choices'][0]['message']['content']
-    return response
+    # return response

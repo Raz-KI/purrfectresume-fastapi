@@ -1,17 +1,33 @@
-# from docx import Document
+from io import BytesIO
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
 
-def generate_files(content):
-    # DOCX
-    # # doc = Document()
-    # for line in content.split("\n"):
-    #     doc.add_paragraph(line)
+def generate_pdf(content: str):
+    buffer = BytesIO()
 
-    # docx_path = "output/resume.docx"
-    # doc.save(docx_path)
+    doc = SimpleDocTemplate(buffer)
+    styles = getSampleStyleSheet()
 
-    # # PDF (simple placeholder)
-    # pdf_path = "output/resume.pdf"
-    # with open(pdf_path, "w") as f:
-    #     f.write(content)
-    return "very good resume"
-    # return pdf_path, docx_path
+    elements = []
+
+    for line in content.split("\n"):
+        elements.append(Paragraph(line, styles["Normal"]))
+        elements.append(Spacer(1, 10))
+
+    doc.build(elements)
+
+    buffer.seek(0)
+    return buffer
+from docx import Document
+
+def generate_docx(content: str):
+    buffer = BytesIO()
+
+    doc = Document()
+    for line in content.split("\n"):
+        doc.add_paragraph(line)
+
+    doc.save(buffer)
+    buffer.seek(0)
+
+    return buffer
