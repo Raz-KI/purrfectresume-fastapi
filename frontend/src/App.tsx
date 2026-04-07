@@ -14,7 +14,6 @@ import {
   AlertCircle, 
   ChevronRight,
   Loader2,
-  Sparkles,
   Target,
   // Upload,
   FileUp
