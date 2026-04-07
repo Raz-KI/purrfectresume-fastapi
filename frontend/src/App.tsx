@@ -39,8 +39,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 export default function App() {
-  const URL = "https://offensively-handsomer-lavonda.ngrok-free.dev/"
-                  
+  const URL = "https://offensively-handsomer-lavonda.ngrok-free.dev";
   const [resume, setResume] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const [companyName, setCompanyName] = useState('');
@@ -131,7 +130,7 @@ export default function App() {
           }
         })
         const res = await axios.post(
-        URL+"/generate-resume",
+        `${URL}/generate-resume`,
         formData
         );
       setResult(res.data.content);
