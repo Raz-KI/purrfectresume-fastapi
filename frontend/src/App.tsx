@@ -124,13 +124,13 @@ export default function App() {
         generateCoverLetter ? "true" : "false"
         );
         // console.log(formData.get("resume"))
-        fetch("http://"+URL+".ngrok-free.app/api", {
+        fetch("https://"+URL+".ngrok-free.app/api", {
           headers: {
             "ngrok-skip-browser-warning": "true"
           }
         })
         const res = await axios.post(
-        "http://"+URL+"/generate-resume",
+        "https://"+URL+"/generate-resume",
         formData
         );
       setResult(res.data.content);
