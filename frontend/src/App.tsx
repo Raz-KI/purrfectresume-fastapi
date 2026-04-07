@@ -40,6 +40,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 export default function App() {
+  const URL = "offensively-handsomer-lavonda.ngrok-free.dev"
   const [resume, setResume] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const [companyName, setCompanyName] = useState('');
@@ -124,8 +125,13 @@ export default function App() {
         generateCoverLetter ? "true" : "false"
         );
         // console.log(formData.get("resume"))
+        fetch("https://your-ngrok-url.ngrok-free.app/api", {
+          headers: {
+            "ngrok-skip-browser-warning": "true"
+          }
+        })
         const res = await axios.post(
-        "http://localhost:8000/generate-resume",
+        "http://"+URL+"/generate-resume",
         formData
         );
       setResult(res.data.content);
