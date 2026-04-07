@@ -124,7 +124,7 @@ export default function App() {
         generateCoverLetter ? "true" : "false"
         );
         // console.log(formData.get("resume"))
-        fetch("https://your-ngrok-url.ngrok-free.app/api", {
+        fetch("http://"+URL+".ngrok-free.app/api", {
           headers: {
             "ngrok-skip-browser-warning": "true"
           }
