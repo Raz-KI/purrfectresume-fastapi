@@ -1,8 +1,14 @@
 from fastapi import APIRouter, Form
-from app.services.resume_parser import extract_text
-from app.services.llm_service import generate_resume
-from app.services.file_generator import generate_pdf, generate_docx
-from app.services.extract_data_from_response import extract_data_from_response
+# from app.services.resume_parser import extract_text
+# from app.services.llm_service import generate_resume
+# from app.services.file_generator import generate_pdf, generate_docx
+# from app.services.extract_data_from_response import extract_data_from_response
+
+from services.resume_parser import extract_text                           # 
+from services.llm_service import generate_resume                          # Comment this when running on local
+from services.file_generator import generate_pdf, generate_docx           #
+from services.extract_data_from_response import extract_data_from_response#
+
 from fastapi.responses import StreamingResponse
 from docxtpl import DocxTemplate
 from pydantic import BaseModel
