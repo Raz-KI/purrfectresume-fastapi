@@ -7,3 +7,4 @@ docxtpl
 python-docx
 pydantic
 reportlab
+pyPDF2
