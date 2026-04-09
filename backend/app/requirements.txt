@@ -8,3 +8,4 @@ python-docx
 pydantic
 reportlab
 pyPDF2
+python-dotenv
