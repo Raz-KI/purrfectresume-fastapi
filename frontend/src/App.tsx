@@ -18,7 +18,7 @@ import {
   // Upload,
   FileUp
 } from 'lucide-react';
-import Markdown from 'react-markdown';
+// import Markdown from 'react-markdown';
 import mammoth from 'mammoth';
 
 import * as pdfjsLib from "pdfjs-dist";
@@ -39,7 +39,8 @@ function cn(...inputs: ClassValue[]) {
 }
 
 export default function App() {
-  const URL = "https://offensively-handsomer-lavonda.ngrok-free.dev";
+  // const URL = "https://offensively-handsomer-lavonda.ngrok-free.dev";
+  const URL = "https://purrfectresume-fastapi.onrender.com/";
   const [resume, setResume] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const [companyName, setCompanyName] = useState('');
