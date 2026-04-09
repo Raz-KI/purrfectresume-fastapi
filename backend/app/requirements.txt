@@ -3,7 +3,7 @@ uvicorn
 google-genai
 jinja2
 python-multipart
-docxtpl==0.16.7
-python-docx==1.1.0
-pydantic==2.6.4
-reportlab==4.1.0
+docxtpl
+python-docx
+pydantic
+reportlab
