@@ -124,15 +124,23 @@ export default function App() {
         generateCoverLetter ? "true" : "false"
         );
         // console.log(formData.get("resume"))
+        try{
         fetch("https://offensively-handsomer-lavonda.ngrok-free.dev/api", {
           headers: {
             "ngrok-skip-browser-warning": "true"
           }
         })
+        console.log("Ngrok warning bypass successful")
+      }
+      catch(err){
+        console.log("Ngrok warning never occured so all good ignore:", err);
+      }
         const res = await axios.post(
         `${URL}/generate-resume`,
         formData
-        );
+        ).catch(() =>
+        axios.post(`http://localhost:8000/generate-resume`, formData)
+      );
       setResult(res.data.content);
       console.log("Here is the response")
       console.log(res.data)
@@ -152,9 +160,8 @@ export default function App() {
 
   const handleDownloadWord = async () => {
     if (result) {
-    //   await generateWordDoc(result.optimizedResume, result.coverLetter, getFileName('docx'))
-    // ;
-        console.log("Downloading feature coming soon")
+      axios.post("http://localhost:8000/download-docx")
+      console.log(result)
     }
   };
 
@@ -506,7 +513,7 @@ export default function App() {
                   </div>
 
                   {/* Preview */}
-                  <div className="bg-white border-2 border-orange-100 rounded-[2.5rem] overflow-hidden shadow-xl shadow-orange-100/30">
+                  {/* <div className="bg-white border-2 border-orange-100 rounded-[2.5rem] overflow-hidden shadow-xl shadow-orange-100/30">
                     <div className="bg-orange-50 px-8 py-4 border-b-2 border-orange-100 flex items-center justify-between">
                       <span className="text-xs font-black text-orange-400 uppercase tracking-[0.2em]">Purr-view</span>
                       <div className="flex gap-2">
@@ -531,7 +538,7 @@ export default function App() {
                         </>
                       )}
                     </div>
-                  </div>
+                  </div> */}
                 </motion.div>
               )}
             </AnimatePresence>

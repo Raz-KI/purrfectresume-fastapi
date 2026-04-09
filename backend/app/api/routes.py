@@ -1,14 +1,30 @@
-from fastapi import APIRouter, UploadFile, File, Form
+from fastapi import APIRouter, Form
 from app.services.resume_parser import extract_text
 from app.services.llm_service import generate_resume
 from app.services.file_generator import generate_pdf, generate_docx
 from app.services.extract_data_from_response import extract_data_from_response
 from fastapi.responses import StreamingResponse
-
+from docxtpl import DocxTemplate
 from pydantic import BaseModel
+from typing import List, Optional
 
 class ResumeRequest(BaseModel):
-    content: str
+    optimizedResume: str
+    coverLetter: str
+    filename: str
+
+class ResumeContent(BaseModel):
+    optimized_resume: str
+    cover_letter: Optional[str] = None
+    ats_score: Optional[int] = None
+    keywords_found: Optional[List[str]] = []
+    keywords_missing: Optional[List[str]] = []
+    suggestions: Optional[List[str]] = []
+
+class DownloadRequest(BaseModel):
+    content: ResumeContent
+
+# final_resume = {}
 
 router = APIRouter()
 
@@ -29,6 +45,8 @@ async def generate_resume_endpoint(
     # 3. Get all the relevant data from the response
     final_data = extract_data_from_response(llm_response)
 
+    global final_resume
+    final_resume = final_data[0]
     return {
         "message": "Resume generated",
         "content": {
@@ -41,8 +59,8 @@ async def generate_resume_endpoint(
         }
     }
 @router.post("/download-pdf")
-def download_pdf(req: ResumeRequest):
-    pdf_buffer = generate_pdf(req.content)
+def download_pdf(req: DownloadRequest):
+    pdf_buffer = generate_pdf(req.content.optimized_resume)
 
     return StreamingResponse(
         pdf_buffer,
@@ -50,11 +68,26 @@ def download_pdf(req: ResumeRequest):
         headers={"Content-Disposition": "attachment; filename=resume.pdf"}
     )
 @router.post("/download-docx")
-def download_docx(req: ResumeRequest):
-    docx_buffer = generate_docx(req.content)
+def download_docx():
+    data = final_resume
+    print("This is the fix",data)
+    doc = DocxTemplate("backend/app/template.docx")
 
-    return StreamingResponse(
-        docx_buffer,
-        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        headers={"Content-Disposition": "attachment; filename=resume.docx"}
-    )
+    context = {
+        "NAME": data["name"],
+        "PHONE": data["phone"],
+        "EMAIL": data["email"],
+        "LINKEDIN": data["linkedin"],
+        "GITHUB": data["github"],
+        "PORTFOLIO": data["portfolio"],
+        "PROFILE": data["profile"],
+        "COMPETENCIES": " • ".join(data["competencies"]),
+        "EXPERIENCE": data["experience"],
+        "PROJECTS": data["projects"],
+        "EDUCATION": data["education"],
+        "ACHIEVEMENTS": data["achievements"]
+    }
+
+    doc.render(context)
+    doc.save("ATS_Resume.docx")
+    return {"status": "ok"}

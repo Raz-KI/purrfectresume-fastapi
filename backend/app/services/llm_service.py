@@ -6,10 +6,12 @@ import json
 load_dotenv()
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+print("Gemini client initialized successfully.",os.getenv("GEMINI_API_KEY"))
 
 generateCoverLetter = True
 companyName = "Google"
 def generate_resume(resume_text, job_description):
+
     prompt = f"""
     You are an expert career coach and ATS (Applicant Tracking System) specialist.
     
@@ -22,20 +24,98 @@ def generate_resume(resume_text, job_description):
     if generateCoverLetter:
         prompt += f"""`5. Write a professional, tailored Cover Letter for the role at {companyName or 'the company'}."""
     
-    prompt += f"""
+    prompt += '''
     6. Provide the output in a structured JSON format.
 
-    Professional Resume Structure Guidelines:
-    - DO NOT use literal escape characters like "\\n" or "\\t". Use actual newlines.
-    - Use a single # for the Candidate Name at the top.
-    - Immediately below the name, provide contact info (Email | Phone | LinkedIn | GitHub) on a new line without any markdown header.
-    - Use ## for major sections: PROFESSIONAL SUMMARY, CORE COMPETENCIES, PROFESSIONAL EXPERIENCE, EDUCATION, and CERTIFICATIONS.
-    - Use ### for Job Titles and Company Names (e.g., ### Senior Software Engineer | Google).
-    - Use bullet points (- ) for specific achievements and responsibilities.
-    - Focus on quantifiable achievements (e.g., "Increased efficiency by 20%").
-    - Ensure keywords from the JD are naturally integrated.
-    - Use standard sentence case for descriptions, only use UPPERCASE for section headers (##).
-    """
+    Your task:
+- Rewrite the candidate's resume to perfectly match the job description
+- Optimize for ATS keyword matching
+- Keep content concise, impactful, and quantified where possible
+
+STRICT OUTPUT RULES:
+- Output ONLY valid JSON
+- No markdown, no explanations, no extra text
+- Follow the exact schema below
+- Do not add or remove fields
+- Ensure all lists are properly formatted
+- Use British English spelling
+
+JSON SCHEMA:
+{
+  "optimizedResume": {
+    "name": "",
+    "phone": "",
+    "email": "",
+    "linkedin": "",
+    "github": "",
+    "portfolio": "",
+    "profile": "",
+    "competencies": [],
+    "experience": [
+      {
+        "role": "",
+        "company": "",
+        "dates": "",
+        "bullets": []
+      }
+    ],
+    "projects": [
+      {
+        "name": "",
+        "bullets": []
+      }
+    ],
+    "education": "",
+    "achievements": []
+  },
+  "atsScore": 0,
+  "keywordsFound": [],
+  "keywordsMissing": [],
+  "suggestions": [],
+  "coverLetter": ""
+}
+
+CONTENT RULES:
+
+PROFILE:
+- 2–4 lines
+- Tailored to the job description
+- Include role, experience, and key strengths
+
+CORE COMPETENCIES:
+- 6–12 skills
+- Extract from job description keywords
+- Use short phrases only (e.g., "Python", "REST APIs", "AWS")
+
+EXPERIENCE:
+- Each role must include:
+  - role, company, dates
+  - 3–5 bullet points
+- Bullet format:
+  - Start with action verb
+  - Include impact/result (numbers if possible)
+  - Include relevant technologies
+
+PROJECTS:
+- 1–3 relevant projects
+- Each with 2–4 bullet points
+- Focus on technical implementation + impact
+
+EDUCATION:
+- Single line format:
+  Degree | University | Year
+
+ACHIEVEMENTS:
+- 2–5 items
+- Include awards, certifications, or measurable accomplishments
+
+FORMATTING RULES:
+- No special characters except standard punctuation
+- No emojis
+- No duplicate content
+- Dates format: "Jan 2023 – Present" or "2021 – 2023"
+
+    '''
     if generateCoverLetter:
         prompt += f"""
         Cover Letter Guidelines:
@@ -60,9 +140,13 @@ def generate_resume(resume_text, job_description):
     - suggestions: 3-5 specific tips for the user to further improve their application for this role.
   
     """
-
+    # print(client.models.list())
+    # for m in genai.list():
+    #     print(m.name, m.supported_generation_methods)
     response = client.models.generate_content(
-    model="gemini-2.5-flash",
+    model="gemini-2.5-pro",
     contents=prompt)
-    print(response.text)
+    print("###")
+    print(response.txt)
+    print("###")
     return response.text
