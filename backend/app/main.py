@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from app.api.routes import router
+from app.api.routes import router # Comment this when pushing to git
+# from api.routes import router # Comment this when running on local
 
 app = FastAPI(title="Perfect Resume API")
 
